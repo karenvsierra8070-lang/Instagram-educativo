@@ -31,44 +31,31 @@
             overflow-x: hidden;
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #363636;
-            border-radius: 10px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: #363636; border-radius: 10px; }
 
-        /* Stories */
         .story-ring {
             background: var(--story-gradient);
             padding: 3px;
             border-radius: 50%;
         }
-
         .story-ring-inner {
             background: var(--bg-primary);
             padding: 2px;
             border-radius: 50%;
         }
-
         .story-avatar {
             width: 56px;
             height: 56px;
             border-radius: 50%;
             object-fit: cover;
         }
-
         .stories-container {
             overflow-x: auto;
             scrollbar-width: none;
         }
-        .stories-container::-webkit-scrollbar {
-            display: none;
-        }
+        .stories-container::-webkit-scrollbar { display: none; }
 
         /* Video container - estilo Instagram Reels */
         .video-container {
@@ -81,36 +68,39 @@
             overflow: hidden;
         }
 
-        /* Wrapper para cropear la barra de YouTube */
-        .video-wrapper {
+        /* Cropper para ocultar bordes de YouTube */
+        .video-cropper {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: calc(100% + 60px);
-            pointer-events: none;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
         }
 
-        .video-wrapper iframe {
+        .video-cropper iframe {
+            position: absolute;
+            top: -12%;
+            left: 0;
             width: 100%;
-            height: 100%;
+            height: 124%;
             border: none;
             pointer-events: auto;
         }
 
-        /* Overlay para ocultar la parte de abajo de YouTube */
-        .video-overlay-bottom {
+        /* Capa de interaccion para corazones */
+        .interaction-layer {
             position: absolute;
-            bottom: 0;
+            top: 0;
             left: 0;
-            right: 0;
-            height: 50px;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            pointer-events: none;
-            z-index: 5;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            background: transparent;
         }
 
-        /* Play button grande */
+        /* Play button */
         .play-button {
             position: absolute;
             top: 50%;
@@ -118,22 +108,20 @@
             transform: translate(-50%, -50%);
             width: 80px;
             height: 80px;
-            background: rgba(0,0,0,0.6);
+            background: rgba(0,0,0,0.7);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            z-index: 10;
+            z-index: 15;
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
         }
-
         .play-button:hover {
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             transform: translate(-50%, -50%) scale(1.1);
         }
-
         .play-button svg {
             width: 40px;
             height: 40px;
@@ -141,14 +129,29 @@
             margin-left: 5px;
         }
 
+        /* Thumbnail */
+        .video-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 5;
+            transition: opacity 0.3s;
+        }
+        .video-thumbnail.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         /* Corazones animados */
         .heart {
             position: absolute;
             pointer-events: none;
-            animation: floatHeart 1s ease-out forwards;
-            font-size: 60px;
+            animation: floatHeart 1.2s ease-out forwards;
             z-index: 100;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.4));
         }
 
         @keyframes floatHeart {
@@ -156,34 +159,136 @@
                 opacity: 1;
                 transform: scale(0) rotate(0deg);
             }
-            50% {
+            30% {
                 opacity: 1;
-                transform: scale(1.3) rotate(-15deg);
+                transform: scale(1.4) rotate(-10deg);
             }
             100% {
                 opacity: 0;
-                transform: scale(1) translateY(-180px) rotate(15deg);
+                transform: scale(1) translateY(-200px) rotate(15deg);
             }
         }
 
-        /* Botones de acción */
+        /* Botones laterales estilo Reels */
+        .side-actions {
+            position: absolute;
+            right: 12px;
+            bottom: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            z-index: 20;
+        }
+        .side-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .side-btn span {
+            font-size: 12px;
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+
         .action-btn {
-            transition: transform 0.2s ease, background 0.2s ease;
+            transition: transform 0.2s ease;
         }
         .action-btn:active {
             transform: scale(0.85);
         }
-
         .action-btn.liked svg {
             fill: var(--accent-red);
-            color: var(--accent-red);
             animation: likePopup 0.4s ease;
         }
-
         @keyframes likePopup {
             0% { transform: scale(1); }
-            50% { transform: scale(1.4); }
+            50% { transform: scale(1.3); }
             100% { transform: scale(1); }
+        }
+
+        /* LIVE Badge */
+        .live-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: #ed4956;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            animation: pulse-live 2s infinite;
+        }
+        .live-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+        @keyframes pulse-live {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Live Comments Overlay */
+        .live-comments-overlay {
+            position: absolute;
+            bottom: 80px;
+            left: 12px;
+            right: 60px;
+            max-height: 200px;
+            overflow: hidden;
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            pointer-events: none;
+        }
+        .live-comment-item {
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            padding: 6px 10px;
+            border-radius: 16px;
+            margin-bottom: 6px;
+            font-size: 13px;
+            color: white;
+            animation: slideUpComment 0.4s ease;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+        }
+        .live-comment-item .username {
+            font-weight: 600;
+            color: #0095f6;
+        }
+        @keyframes slideUpComment {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Viewer count */
+        .viewer-count {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
         /* Buscador */
@@ -208,9 +313,7 @@
             flex: 1;
             font-size: 14px;
         }
-        .search-bar input:focus {
-            outline: none;
-        }
+        .search-bar input:focus { outline: none; }
 
         /* Navigation */
         .nav-item {
@@ -224,9 +327,7 @@
             transition: color 0.2s;
             position: relative;
         }
-        .nav-item.active {
-            color: var(--text-primary);
-        }
+        .nav-item.active { color: var(--text-primary); }
         .nav-item.active::after {
             content: '';
             position: absolute;
@@ -242,104 +343,95 @@
             border-bottom: 1px solid var(--border-color);
         }
 
+        /* Comment Input Area */
+        .comment-input-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+        .comment-input-area input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .comment-input-area input:focus { outline: none; }
+        .comment-input-area input::placeholder { color: var(--text-secondary); }
+        .comment-input-area button {
+            background: none;
+            border: none;
+            color: var(--accent-blue);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .comment-input-area button:hover { opacity: 0.7; }
+
+        /* Comments Section */
+        .comments-section {
+            padding: 12px 16px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: none;
+        }
+        .comments-section.open { display: block; }
+        
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .comment-item .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .comment-item .content {
+            flex: 1;
+        }
+        .comment-item .username {
+            font-weight: 600;
+            font-size: 13px;
+            margin-right: 6px;
+        }
+        .comment-item .text {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+        .comment-item .time {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
         /* Animaciones de entrada */
         .fade-in-up {
             animation: fadeInUp 0.6s ease forwards;
             opacity: 0;
         }
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
         .stagger-1 { animation-delay: 0.1s; }
         .stagger-2 { animation-delay: 0.2s; }
         .stagger-3 { animation-delay: 0.3s; }
         .stagger-4 { animation-delay: 0.4s; }
         .stagger-5 { animation-delay: 0.5s; }
 
-        /* Botones laterales estilo Reels */
-        .side-actions {
-            position: absolute;
-            right: 12px;
-            bottom: 80px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            z-index: 20;
-        }
-
-        .side-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .side-btn span {
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        /* Thumbnail */
-        .video-thumbnail {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 2;
-            transition: opacity 0.3s;
-        }
-
-        .video-thumbnail.hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Responsive */
         @media (max-width: 640px) {
-            .story-avatar {
-                width: 48px;
-                height: 48px;
-            }
-            .video-container {
-                max-height: 65vh;
-            }
-            .side-actions {
-                bottom: 60px;
-            }
+            .story-avatar { width: 48px; height: 48px; }
+            .video-container { max-height: 65vh; }
         }
 
-        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
-            .heart, .fade-in-up {
-                animation: none;
-                opacity: 1;
-            }
-        }
-
-        /* Indicador de muted */
-        .muted-indicator {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background: rgba(0,0,0,0.6);
-            padding: 8px;
-            border-radius: 50%;
-            z-index: 15;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .muted-indicator:hover {
-            background: rgba(0,0,0,0.8);
+            .heart, .fade-in-up, .live-comment-item { animation: none; opacity: 1; }
         }
     </style>
 </head>
@@ -347,7 +439,6 @@
     <!-- Header -->
     <header class="sticky top-0 z-50 bg-black border-b border-[#262626]">
         <div class="max-w-lg mx-auto px-4 py-3">
-            <!-- Logo y titulo -->
             <div class="flex items-center justify-between mb-3">
                 <div class="flex items-center gap-2">
                     <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
@@ -382,7 +473,6 @@
                 </div>
             </div>
 
-            <!-- Buscador destacado -->
             <div class="search-bar fade-in-up">
                 <svg width="18" height="18" fill="none" stroke="#a8a8a8" stroke-width="2">
                     <circle cx="8" cy="8" r="7"/>
@@ -392,7 +482,6 @@
             </div>
         </div>
 
-        <!-- Navigation tabs -->
         <nav class="max-w-lg mx-auto px-4">
             <div class="flex justify-around">
                 <button class="nav-item active" data-tab="posts">
@@ -424,12 +513,9 @@
 
     <!-- Main Content -->
     <main class="max-w-lg mx-auto">
-        <!-- Stories Section -->
         <section class="stories-container py-4 px-4 border-b border-[#262626]">
             <div class="flex gap-4" id="stories-list"></div>
         </section>
-
-        <!-- Feed de Videos -->
         <section id="posts-feed" class="pb-20"></section>
     </main>
 
@@ -476,78 +562,109 @@
             { username: 'Haxe666', name: 'Mi Cuenta Educativa', avatar: 'H', gradient: 'from-purple-500 to-pink-500', verified: false }
         ];
 
-        // Estado de los posts con los videos ya cargados
+        // Comentarios predefinidos para el LIVE
+        const liveCommentsData = [
+            { user: 'maria_cordoba', text: 'Que triste situacion, Dios quiera que mejore' },
+            { user: 'juan_pablo_23', text: 'Yo vivo cerca de ahi y esta horrible la situacion' },
+            { user: 'laura_riosp', text: 'Como podemos ayudar? alguien sabe?' },
+            { user: 'carlos_monteria', text: 'El gobierno tiene que responder ya!' },
+            { user: 'ana_sofia_98', text: 'Mis primos estan afectados, gracias por informar' },
+            { user: 'pedro_urrá', text: 'La hidroelectrica tiene mucha culpa de esto' },
+            { user: 'carmen_lucia', text: 'Orando por todas las familias de Cordoba' },
+            { user: 'andres_martinez', text: 'Excelente contenido, gracias por visibilizar' },
+            { user: 'sofia_emprendedora', text: 'Donde podemos donar alimentos y ropa?' },
+            { user: 'roberto_diaz', text: 'Esto es un desastre natural y humano' },
+            { user: 'valentina_12', text: 'Compartiendo para que mas gente lo vea' },
+            { user: 'fernando_tropical', text: 'Los animales tambien estan sufriendo mucho' },
+            { user: 'isabel_costa', text: 'Hace 10 anos no pasaba esto, que paso?' },
+            { user: 'diego_rios', text: 'La comunidad Embera esta muy afectada' },
+            { user: 'patricia_gomez', text: 'Gracias por dar voz a los que no tienen' },
+            { user: 'ricardo_sinu', text: 'El Rio Sinu esta irreconocible' },
+            { user: 'lucia_mendoza', text: 'Necesitamos soluciones definitivas' },
+            { user: 'oscar_lobezno', text: 'Urra debe responder por los danos' },
+            { user: 'daniela_2001', text: 'Mis abuelos perdieron todo en la inundacion' },
+            { user: 'miguel_angel', text: 'Solidaridad con Cordoba! Fuerza!' }
+        ];
+
+        // Estado de los posts
         let posts = [
             {
                 id: 1,
                 account: accounts[0],
                 videoId: 'LY5snY-sSug',
-                description: 'Que esta pasando realmente en Urra y el rio Sinu? Aqui te lo explicamos sin rodeos. En las ultimas semanas, Cordoba ha vivido una de sus peores emergencias por inundaciones.',
+                description: '🚨 ¿Qué está pasando realmente en Urrá y el río Sinú? Aquí te lo explicamos sin rodeos. 👇 En las últimas semanas, Córdoba ha vivido una de sus peores emergencias por inundaciones, dejando a miles de familias damnificadas en Tierralta, Montería, Lorica y otros municipios. Pero, ¿de quién es la culpa?',
                 likes: 1247,
                 liked: false,
                 saved: false,
-                comments: 89,
+                comments: [],
                 shares: 34,
-                isPlaying: false
+                isPlaying: false,
+                isLive: true,
+                liveViewerCount: 1243
             },
             {
                 id: 2,
                 account: accounts[1],
                 videoId: 'V-IkAAtrXqg',
-                description: 'Maquillate conmigo mientras te cuento como nos metieron los dedos en la boca con lo de las inundaciones de Urra... Al principio yo estaba en plan: pobrecitos, es el cambio climatico.',
+                description: '💄 Maquíllate conmigo mientras te cuento cómo nos metieron los dedos en la boca con lo de las inundaciones de Urrá... 🤯👇 Al principio yo estaba en plan: "Ay, pobrecitos, es que el cambio climático y las lluvias atípicas no dan tregua". Pero me puse a investigar, a leer informes y a consultar con los que saben, y resulta que el agua no es la única responsable aquí. El verdadero cortocircuito fue... la comunicación. 🛑',
                 likes: 892,
                 liked: false,
                 saved: false,
-                comments: 56,
+                comments: [],
                 shares: 23,
-                isPlaying: false
+                isPlaying: false,
+                isLive: false
             },
             {
                 id: 3,
                 account: accounts[2],
                 videoId: 'W12jz2ruU78',
-                description: 'Detengamos un segundo el debate tecnico y hablemos de lo que realmente importa aqui: la dignidad de la gente. No mas comentarios sin corazon.',
+                description: 'Detengamos un segundo el debate técnico y hablemos de lo que realmente importa aquí: la dignidad de la gente. 🛑👇 He estado leyendo comentarios en redes que me dejan fría. Gente diciendo que "eso les pasa por vivir cerca del río", que "es culpa de la naturaleza y ya" o que "solo buscan que el gobierno les regale todo". ¡No más! Desmintamos esto de una vez.',
                 likes: 2103,
-                liked: false,
+                 liked: false,
                 saved: false,
-                comments: 134,
+                comments: [],
                 shares: 67,
-                isPlaying: false
+                isPlaying: false,
+                isLive: false
             },
             {
                 id: 4,
                 account: accounts[3],
                 videoId: 'ICzCYVF-cZg',
-                description: 'Comunicado oficial: Medidas de mitigacion y compromisos en la Central Hidroelectrica URRA I. Frente a la contingencia ambiental y las lluvias atipicas.',
+                description: '📢 Comunicado oficial: Medidas de mitigación y compromisos en la Central Hidroeléctrica URRÁ I. 👇 Frente a la contingencia ambiental y las lluvias atípicas e históricas que han afectado al departamento de Córdoba, desde la Empresa URRÁ S.A. E.S.P. ratificamos nuestro compromiso con la protección y bienestar de las comunidades de la cuenca del río Sinú.',
                 likes: 567,
                 liked: false,
                 saved: false,
-                comments: 42,
+                comments: [],
                 shares: 18,
-                isPlaying: false
+                isPlaying: false,
+                isLive: false
             },
             {
                 id: 5,
                 account: accounts[4],
                 videoId: 'brAR0sGxKjY',
-                description: 'Como haremos realidad estos cambios? Pasamos de las palabras a la accion junto a las comunidades del Sinu. Activamos dos estrategias clave.',
+                description: '🛠️ ¿Cómo haremos realidad estos cambios? Pasamos de las palabras a la acción junto a las comunidades del Sinú. 👇  Entendemos que la prevención no se hace desde un escritorio, sino en el territorio. Por eso, para que las inundaciones no nos vuelvan a tomar por sorpresa, activamos dos estrategias clave ',
                 likes: 334,
                 liked: false,
                 saved: false,
-                comments: 28,
+                comments: [],
                 shares: 12,
-                isPlaying: false
+                isPlaying: false,
+                isLive: false
             }
         ];
 
-        // Formatear números
+        // Live intervals storage
+        let liveIntervals = {};
+
         function formatNumber(num) {
             if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
             if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
             return num.toString();
         }
 
-        // Renderizar stories
         function renderStories() {
             const container = document.getElementById('stories-list');
             container.innerHTML = accounts.map((account, index) => `
@@ -564,26 +681,24 @@
             `).join('');
         }
 
-        // Crear corazones flotantes
         function createHearts(container, x, y) {
             const heartSymbols = ['❤️', '💗', '💖', '💕', '💝', '❤️‍🔥'];
             
-            for (let i = 0; i < 8; i++) {
+            for (let i = 0; i < 10; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'heart';
                     heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-                    heart.style.left = (x + (Math.random() - 0.5) * 120) + 'px';
-                    heart.style.top = (y + (Math.random() - 0.5) * 60) + 'px';
-                    heart.style.fontSize = (35 + Math.random() * 35) + 'px';
+                    heart.style.left = (x + (Math.random() - 0.5) * 140) + 'px';
+                    heart.style.top = (y + (Math.random() - 0.5) * 80) + 'px';
+                    heart.style.fontSize = (30 + Math.random() * 40) + 'px';
                     container.appendChild(heart);
                     
-                    setTimeout(() => heart.remove(), 1000);
-                }, i * 60);
+                    setTimeout(() => heart.remove(), 1200);
+                }, i * 50);
             }
         }
 
-        // Toggle like
         function toggleLike(postId, button) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
@@ -591,9 +706,6 @@
             post.liked = !post.liked;
             post.likes += post.liked ? 1 : -1;
             
-            button.classList.toggle('liked', post.liked);
-            
-            // Actualizar todos los botones de like de este post
             document.querySelectorAll(`#post-${postId} .like-btn`).forEach(btn => {
                 btn.classList.toggle('liked', post.liked);
                 const svg = btn.querySelector('svg');
@@ -609,7 +721,6 @@
             }
         }
 
-        // Toggle save
         function toggleSave(postId, button) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
@@ -623,7 +734,6 @@
             }
         }
 
-        // Toggle play/pause del video (simulado con overlay)
         function toggleVideo(postId, thumbnail, playBtn) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
@@ -633,18 +743,114 @@
             if (post.isPlaying) {
                 thumbnail.classList.add('hidden');
                 playBtn.style.display = 'none';
+                
+                // Iniciar LIVE comments si es el primer video
+                if (post.isLive && !liveIntervals[postId]) {
+                    startLiveComments(postId);
+                }
             } else {
                 thumbnail.classList.remove('hidden');
                 playBtn.style.display = 'flex';
             }
         }
 
-        // Renderizar posts
+        function startLiveComments(postId) {
+            const container = document.getElementById(`live-comments-${postId}`);
+            if (!container) return;
+            
+            let commentIndex = 0;
+            
+            // Funcion para agregar comentario
+            const addLiveComment = () => {
+                if (commentIndex >= liveCommentsData.length) {
+                    // Reiniciar desde el principio si se acaban
+                    commentIndex = 0;
+                }
+                
+                const comment = liveCommentsData[commentIndex];
+                const commentEl = document.createElement('div');
+                commentEl.className = 'live-comment-item';
+                commentEl.innerHTML = `<span class="username">${comment.user}</span> ${comment.text}`;
+                
+                // Agregar al inicio (arriba)
+                container.insertBefore(commentEl, container.firstChild);
+                
+                // Limitar a 10 comentarios visibles
+                while (container.children.length > 10) {
+                    container.removeChild(container.lastChild);
+                }
+                
+                // Actualizar viewer count aleatoriamente
+                const post = posts.find(p => p.id === postId);
+                if (post) {
+                    post.liveViewerCount += Math.floor(Math.random() * 10) - 3;
+                    const viewerEl = document.getElementById(`viewer-count-${postId}`);
+                    if (viewerEl) {
+                        viewerEl.innerHTML = `<svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg> ${formatNumber(post.liveViewerCount)}`;
+                    }
+                }
+                
+                commentIndex++;
+            };
+            
+            // Agregar primer comentario inmediatamente
+            addLiveComment();
+            
+            // Programar siguientes cada 10 segundos
+            liveIntervals[postId] = setInterval(addLiveComment, 10000);
+        }
+
+        function toggleComments(postId) {
+            const section = document.getElementById(`comments-section-${postId}`);
+            if (section) {
+                section.classList.toggle('open');
+            }
+        }
+
+        function addComment(postId, input) {
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const post = posts.find(p => p.id === postId);
+            if (!post) return;
+            
+            const newComment = {
+                user: 'tu_usuario',
+                text: text,
+                time: 'Ahora'
+            };
+            
+            post.comments.unshift(newComment);
+            
+            const container = document.getElementById(`comments-list-${postId}`);
+            if (container) {
+                const commentHTML = `
+                    <div class="comment-item">
+                        <div class="avatar bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold rounded-full">T</div>
+                        <div class="content">
+                            <span class="username">${newComment.user}</span>
+                            <span class="text">${newComment.text}</span>
+                            <div class="time">${newComment.time}</div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('afterbegin', commentHTML);
+            }
+            
+            input.value = '';
+            
+            // Actualizar contador
+            const countEl = document.querySelector(`#post-${postId} .comment-count`);
+            if (countEl) {
+                countEl.textContent = post.comments.length;
+            }
+        }
+
         function renderPosts() {
             const container = document.getElementById('posts-feed');
             container.innerHTML = posts.map((post, index) => `
                 <article id="post-${post.id}" class="post-card fade-in-up stagger-${index + 1}">
-                    <!-- Header del post -->
+                    <!-- Header -->
                     <div class="flex items-center justify-between p-3">
                         <div class="flex items-center gap-3">
                             <div class="w-8 h-8 rounded-full bg-gradient-to-br ${post.account.gradient} flex items-center justify-center text-white font-bold text-sm">
@@ -668,19 +874,19 @@
                         </button>
                     </div>
                     
-                    <!-- Video container estilo Reels -->
+                    <!-- Video Container -->
                     <div class="video-container mx-3" id="video-container-${post.id}">
-                        <!-- Video embebido -->
-                        <div class="video-wrapper">
+                        <!-- Cropper con iframe -->
+                        <div class="video-cropper">
                             <iframe 
-                                src="https://www.youtube.com/embed/${post.videoId}?autoplay=0&controls=1&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${post.videoId}" 
+                                src="https://www.youtube.com/embed/${post.videoId}?autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${post.videoId}" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen
                                 loading="lazy"
                             ></iframe>
                         </div>
                         
-                        <!-- Thumbnail con play button -->
+                        <!-- Thumbnail -->
                         <img 
                             class="video-thumbnail" 
                             src="https://img.youtube.com/vi/${post.videoId}/maxresdefault.jpg"
@@ -689,17 +895,31 @@
                             onerror="this.src='https://img.youtube.com/vi/${post.videoId}/hqdefault.jpg'"
                         >
                         
-                        <!-- Play button -->
+                        <!-- Play Button -->
                         <div class="play-button" id="play-btn-${post.id}" onclick="toggleVideo(${post.id}, document.getElementById('thumbnail-${post.id}'), this)">
                             <svg viewBox="0 0 24 24">
                                 <polygon points="5,3 19,12 5,21"/>
                             </svg>
                         </div>
                         
-                        <!-- Overlay inferior para ocultar controles de YouTube -->
-                        <div class="video-overlay-bottom"></div>
+                        <!-- Interaction Layer para corazones -->
+                        <div class="interaction-layer" id="interaction-${post.id}"></div>
                         
-                        <!-- Botones laterales estilo Reels -->
+                        ${post.isLive ? `
+                            <!-- LIVE Badge -->
+                            <div class="live-badge">EN VIVO</div>
+                            
+                            <!-- Viewer Count -->
+                            <div class="viewer-count" id="viewer-count-${post.id}">
+                                <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                ${formatNumber(post.liveViewerCount)}
+                            </div>
+                            
+                            <!-- Live Comments Overlay -->
+                            <div class="live-comments-overlay" id="live-comments-${post.id}"></div>
+                        ` : ''}
+                        
+                        <!-- Side Actions -->
                         <div class="side-actions">
                             <div class="side-btn">
                                 <button class="action-btn p-3 bg-black/40 rounded-full like-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id}, this)" aria-label="Me gusta">
@@ -710,12 +930,12 @@
                                 <span>${formatNumber(post.likes)}</span>
                             </div>
                             <div class="side-btn">
-                                <button class="action-btn p-3 bg-black/40 rounded-full" aria-label="Comentar">
+                                <button class="action-btn p-3 bg-black/40 rounded-full" onclick="toggleComments(${post.id})" aria-label="Comentar">
                                     <svg width="28" height="28" fill="none" stroke="white" stroke-width="2">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                                     </svg>
                                 </button>
-                                <span>${post.comments}</span>
+                                <span class="comment-count">${post.comments.length}</span>
                             </div>
                             <div class="side-btn">
                                 <button class="action-btn p-3 bg-black/40 rounded-full" aria-label="Compartir">
@@ -735,7 +955,7 @@
                             </div>
                         </div>
                         
-                        <!-- Info del usuario en la parte inferior -->
+                        <!-- User info en bottom -->
                         <div class="absolute bottom-4 left-4 right-16 z-10">
                             <div class="flex items-center gap-2 mb-2">
                                 <div class="w-7 h-7 rounded-full bg-gradient-to-br ${post.account.gradient} flex items-center justify-center text-white font-bold text-xs">
@@ -743,11 +963,11 @@
                                 </div>
                                 <span class="font-semibold text-sm text-white drop-shadow-lg">${post.account.username}</span>
                             </div>
-                            <p class="text-white text-xs drop-shadow-lg line-clamp-2">${post.description.slice(0, 80)}...</p>
+                            <p class="text-white text-xs drop-shadow-lg">${post.description.slice(0, 60)}...</p>
                         </div>
                     </div>
                     
-                    <!-- Actions abajo -->
+                    <!-- Actions below video -->
                     <div class="p-3">
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-4">
@@ -756,7 +976,7 @@
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                                     </svg>
                                 </button>
-                                <button class="action-btn" aria-label="Comentar">
+                                <button class="action-btn" onclick="toggleComments(${post.id})" aria-label="Comentar">
                                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                                     </svg>
@@ -777,33 +997,50 @@
                         <p class="font-semibold text-sm likes-count">${formatNumber(post.likes)} Me gusta</p>
                     </div>
                     
-                    <!-- Description completa -->
-                    <div class="px-3 pb-4">
+                    <!-- Description -->
+                    <div class="px-3 pb-2">
                         <p class="text-sm">
                             <span class="font-semibold">${post.account.username}</span>
                             <span class="ml-1">${post.description}</span>
                         </p>
-                        <p class="text-xs text-[#a8a8a8] mt-2">Ver los ${post.comments} comentarios</p>
-                        <p class="text-xs text-[#a8a8a8] mt-1">Hace ${Math.floor(Math.random() * 24) + 1} horas</p>
+                    </div>
+                    
+                    <!-- Comments Section -->
+                    <div class="comments-section" id="comments-section-${post.id}">
+                        <div id="comments-list-${post.id}">
+                            ${post.comments.map(c => `
+                                <div class="comment-item">
+                                    <div class="avatar bg-gradient-to-br from-gray-500 to-gray-600 flex items-center justify-center text-white text-xs font-bold rounded-full">${c.user[0].toUpperCase()}</div>
+                                    <div class="content">
+                                        <span class="username">${c.user}</span>
+                                        <span class="text">${c.text}</span>
+                                        <div class="time">${c.time}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <!-- Comment Input -->
+                    <div class="comment-input-area">
+                        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">T</div>
+                        <input type="text" id="comment-input-${post.id}" placeholder="Agrega un comentario..." onkeypress="if(event.key==='Enter')addComment(${post.id}, this)">
+                        <button onclick="addComment(${post.id}, document.getElementById('comment-input-${post.id}'))">Publicar</button>
                     </div>
                 </article>
             `).join('');
 
-            // Agregar event listeners para corazones en el área del video
+            // Event listeners para corazones (doble click)
             posts.forEach(post => {
-                const container = document.getElementById(`video-container-${post.id}`);
-                if (container) {
-                    container.addEventListener('dblclick', (e) => {
-                        // No crear corazones si es un botón
-                        if (e.target.closest('button') || e.target.closest('.play-button')) return;
-                        
-                        const rect = container.getBoundingClientRect();
+                const interactionLayer = document.getElementById(`interaction-${post.id}`);
+                if (interactionLayer) {
+                    interactionLayer.addEventListener('dblclick', (e) => {
+                        const rect = interactionLayer.getBoundingClientRect();
                         const x = e.clientX - rect.left;
                         const y = e.clientY - rect.top;
                         
-                        createHearts(container, x, y);
+                        createHearts(interactionLayer, x, y);
                         
-                        // También dar like
                         if (!post.liked) {
                             toggleLike(post.id, document.querySelector(`#post-${post.id} .side-btn .like-btn`));
                         }
