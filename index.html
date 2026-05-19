@@ -31,7 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* Scrollbar personalizado */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -71,21 +70,75 @@
             display: none;
         }
 
-        /* Video container */
+        /* Video container - estilo Instagram Reels */
         .video-container {
             position: relative;
             width: 100%;
             aspect-ratio: 9/16;
-            max-height: 70vh;
+            max-height: 75vh;
             background: var(--bg-card);
             border-radius: 12px;
             overflow: hidden;
         }
 
-        .video-container iframe {
+        /* Wrapper para cropear la barra de YouTube */
+        .video-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% + 60px);
+            pointer-events: none;
+        }
+
+        .video-wrapper iframe {
             width: 100%;
             height: 100%;
             border: none;
+            pointer-events: auto;
+        }
+
+        /* Overlay para ocultar la parte de abajo de YouTube */
+        .video-overlay-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Play button grande */
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(0,0,0,0.6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .play-button:hover {
+            background: rgba(0,0,0,0.8);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .play-button svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+            margin-left: 5px;
         }
 
         /* Corazones animados */
@@ -95,6 +148,7 @@
             animation: floatHeart 1s ease-out forwards;
             font-size: 60px;
             z-index: 100;
+            filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
         }
 
         @keyframes floatHeart {
@@ -104,17 +158,17 @@
             }
             50% {
                 opacity: 1;
-                transform: scale(1.2) rotate(-10deg);
+                transform: scale(1.3) rotate(-15deg);
             }
             100% {
                 opacity: 0;
-                transform: scale(1) translateY(-150px) rotate(10deg);
+                transform: scale(1) translateY(-180px) rotate(15deg);
             }
         }
 
         /* Botones de acción */
         .action-btn {
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, background 0.2s ease;
         }
         .action-btn:active {
             transform: scale(0.85);
@@ -128,48 +182,8 @@
 
         @keyframes likePopup {
             0% { transform: scale(1); }
-            50% { transform: scale(1.3); }
+            50% { transform: scale(1.4); }
             100% { transform: scale(1); }
-        }
-
-        /* Input de enlace */
-        .link-input {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 12px;
-            transition: border-color 0.2s;
-        }
-        .link-input:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-        }
-        .link-input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        /* Descripción editable */
-        .editable-description {
-            background: transparent;
-            border: 1px dashed transparent;
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: var(--text-primary);
-            width: 100%;
-            min-height: 60px;
-            resize: none;
-            transition: border-color 0.2s;
-        }
-        .editable-description:hover {
-            border-color: var(--border-color);
-        }
-        .editable-description:focus {
-            outline: none;
-            border-color: var(--accent-blue);
-            background: var(--bg-secondary);
         }
 
         /* Buscador */
@@ -228,40 +242,6 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        /* Follow button */
-        .follow-btn {
-            background: var(--accent-blue);
-            color: white;
-            padding: 6px 16px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 12px;
-            transition: opacity 0.2s;
-        }
-        .follow-btn:hover {
-            opacity: 0.85;
-        }
-        .follow-btn.following {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-        }
-
-        /* Modal */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-        .modal-overlay.active {
-            display: flex;
-        }
-
         /* Animaciones de entrada */
         .fade-in-up {
             animation: fadeInUp 0.6s ease forwards;
@@ -284,6 +264,46 @@
         .stagger-4 { animation-delay: 0.4s; }
         .stagger-5 { animation-delay: 0.5s; }
 
+        /* Botones laterales estilo Reels */
+        .side-actions {
+            position: absolute;
+            right: 12px;
+            bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 20;
+        }
+
+        .side-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .side-btn span {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Thumbnail */
+        .video-thumbnail {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 2;
+            transition: opacity 0.3s;
+        }
+
+        .video-thumbnail.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
         /* Responsive */
         @media (max-width: 640px) {
             .story-avatar {
@@ -291,7 +311,10 @@
                 height: 48px;
             }
             .video-container {
-                max-height: 60vh;
+                max-height: 65vh;
+            }
+            .side-actions {
+                bottom: 60px;
             }
         }
 
@@ -301,6 +324,22 @@
                 animation: none;
                 opacity: 1;
             }
+        }
+
+        /* Indicador de muted */
+        .muted-indicator {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0,0,0,0.6);
+            padding: 8px;
+            border-radius: 50%;
+            z-index: 15;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .muted-indicator:hover {
+            background: rgba(0,0,0,0.8);
         }
     </style>
 </head>
@@ -376,10 +415,6 @@
                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <circle cx="12" cy="12" r="3"/>
-                        <line x1="12" y1="2" x2="12" y2="4"/>
-                        <line x1="12" y1="20" x2="12" y2="22"/>
-                        <line x1="2" y1="12" x2="4" y2="12"/>
-                        <line x1="20" y1="12" x2="22" y2="12"/>
                     </svg>
                     <span class="text-xs font-medium">Etiquetados</span>
                 </button>
@@ -391,22 +426,18 @@
     <main class="max-w-lg mx-auto">
         <!-- Stories Section -->
         <section class="stories-container py-4 px-4 border-b border-[#262626]">
-            <div class="flex gap-4" id="stories-list">
-                <!-- Stories se generan con JS -->
-            </div>
+            <div class="flex gap-4" id="stories-list"></div>
         </section>
 
         <!-- Feed de Videos -->
-        <section id="posts-feed" class="pb-20">
-            <!-- Posts se generan con JS -->
-        </section>
+        <section id="posts-feed" class="pb-20"></section>
     </main>
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-[#262626] z-50">
         <div class="max-w-lg mx-auto flex justify-around py-2">
             <button class="p-3" aria-label="Inicio">
-                <svg width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="0">
+                <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 </svg>
             </button>
@@ -435,27 +466,6 @@
         </div>
     </nav>
 
-    <!-- Modal para configurar video -->
-    <div class="modal-overlay" id="config-modal">
-        <div class="bg-[#1a1a1a] rounded-2xl p-6 max-w-sm w-full mx-4">
-            <h3 class="text-lg font-semibold mb-4">Configurar Video</h3>
-            <div class="space-y-4">
-                <div>
-                    <label class="text-sm text-gray-400 mb-2 block">Enlace de YouTube Short</label>
-                    <input type="text" class="link-input" id="video-link-input" placeholder="https://youtube.com/shorts/LY5snY-sSug?feature=share">
-                </div>
-                <div>
-                    <label class="text-sm text-gray-400 mb-2 block">Descripción</label>
-                    <textarea class="editable-description w-full" id="video-desc-input" rows="3" placeholder="Escribe la descripción..."></textarea>
-                </div>
-                <div class="flex gap-3 mt-6">
-                    <button class="flex-1 py-2 rounded-lg bg-[#363636] font-medium" onclick="closeModal()">Cancelar</button>
-                    <button class="flex-1 py-2 rounded-lg bg-[#0095f6] font-medium" onclick="saveVideoConfig()">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Datos de las cuentas
         const accounts = [
@@ -466,87 +476,69 @@
             { username: 'Haxe666', name: 'Mi Cuenta Educativa', avatar: 'H', gradient: 'from-purple-500 to-pink-500', verified: false }
         ];
 
-        // Estado de los posts
+        // Estado de los posts con los videos ya cargados
         let posts = [
             {
                 id: 1,
                 account: accounts[0],
-                videoId: '',
-                videoUrl: 'https://youtube.com/shorts/LY5snY-sSug?feature=share',
-                description: '🚨 ¿Qué está pasando realmente en Urrá y el río Sinú? Aquí te lo explicamos sin rodeos. En las últimas semanas, Córdoba ha vivido una de sus peores emergencias por inundaciones, dejando a miles de familias damnificadas en Tierralta, Montería, Lorica y otros municipios. Pero, ¿de quién es la culpa?           Leer más',
+                videoId: 'LY5snY-sSug',
+                description: 'Que esta pasando realmente en Urra y el rio Sinu? Aqui te lo explicamos sin rodeos. En las ultimas semanas, Cordoba ha vivido una de sus peores emergencias por inundaciones.',
                 likes: 1247,
                 liked: false,
                 saved: false,
                 comments: 89,
-                shares: 34
+                shares: 34,
+                isPlaying: false
             },
             {
                 id: 2,
                 account: accounts[1],
-                videoId: '',
-                videoUrl: 'https://youtube.com/shorts/V-IkAAtrXqg?feature=share',
-                description: '💄 Maquíllate conmigo mientras te cuento cómo nos metieron los dedos en la boca con lo de las inundaciones de Urrá... 🤯👇                     Al principio yo estaba en plan: "Ay, pobrecitos, es que el cambio climático y las lluvias atípicas no dan tregua". Pero me puse a investigar, a leer informes y      Leer más',
+                videoId: 'V-IkAAtrXqg',
+                description: 'Maquillate conmigo mientras te cuento como nos metieron los dedos en la boca con lo de las inundaciones de Urra... Al principio yo estaba en plan: pobrecitos, es el cambio climatico.',
                 likes: 892,
                 liked: false,
                 saved: false,
                 comments: 56,
-                shares: 23
+                shares: 23,
+                isPlaying: false
             },
             {
                 id: 3,
                 account: accounts[2],
-                videoId: '',
-                videoUrl: 'https://youtube.com/shorts/W12jz2ruU78?feature=share',
-                description: 'Detengamos un segundo el debate técnico y hablemos de lo que realmente importa aquí: la dignidad de la gente. 🛑👇 He estado leyendo comentarios en redes que me dejan fría. Gente diciendo que "eso les pasa por vivir cerca del río", que "es culpa de la naturaleza y ya" o que "solo buscan que el gobierno les regale todo". ¡No más! Desmintamos esto de una vez.      Leer más',
+                videoId: 'W12jz2ruU78',
+                description: 'Detengamos un segundo el debate tecnico y hablemos de lo que realmente importa aqui: la dignidad de la gente. No mas comentarios sin corazon.',
                 likes: 2103,
                 liked: false,
                 saved: false,
                 comments: 134,
-                shares: 67
+                shares: 67,
+                isPlaying: false
             },
             {
                 id: 4,
                 account: accounts[3],
-                videoId: '',
-                videoUrl: 'https://youtube.com/shorts/ICzCYVF-cZg?feature=share',
-                description: '📢 Comunicado oficial: Medidas de mitigación y compromisos en la Central Hidroeléctrica URRÁ I. 👇      Frente a la contingencia ambiental y las lluvias atípicas e históricas que han afectado al departamento de Córdoba, desde la Empresa URRÁ S.A. E.S.P. ratificamos nuestro compromiso con la protección y bienestar de las comunidades de la cuenca del río Sinú.      Leer más',
+                videoId: 'ICzCYVF-cZg',
+                description: 'Comunicado oficial: Medidas de mitigacion y compromisos en la Central Hidroelectrica URRA I. Frente a la contingencia ambiental y las lluvias atipicas.',
                 likes: 567,
                 liked: false,
                 saved: false,
                 comments: 42,
-                shares: 18
+                shares: 18,
+                isPlaying: false
             },
             {
                 id: 5,
                 account: accounts[4],
-                videoId: '',
-                videoUrl: 'https://youtube.com/shorts/brAR0sGxKjY?feature=share',
-                description: '🛠️ ¿Cómo haremos realidad estos cambios? Pasamos de las palabras a la acción junto a las comunidades del Sinú. 👇 Entendemos que la prevención no se hace desde un escritorio, sino en el territorio. Por eso, para que las inundaciones no nos vuelvan a tomar por sorpresa, activamos dos estrategias clave',
+                videoId: 'brAR0sGxKjY',
+                description: 'Como haremos realidad estos cambios? Pasamos de las palabras a la accion junto a las comunidades del Sinu. Activamos dos estrategias clave.',
                 likes: 334,
                 liked: false,
                 saved: false,
                 comments: 28,
-                shares: 12
+                shares: 12,
+                isPlaying: false
             }
         ];
-
-        let currentEditingPost = null;
-
-        // Extraer ID de video de YouTube
-        function extractYouTubeId(url) {
-            if (!url) return '';
-            const patterns = [
-                /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]+)/,
-                /(?:youtu\.be\/)([a-zA-Z0-9_-]+)/,
-                /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/,
-                /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/
-            ];
-            for (const pattern of patterns) {
-                const match = url.match(pattern);
-                if (match) return match[1];
-            }
-            return '';
-        }
 
         // Formatear números
         function formatNumber(num) {
@@ -574,21 +566,20 @@
 
         // Crear corazones flotantes
         function createHearts(container, x, y) {
-            const colors = ['#ed4956', '#ff6b6b', '#ff8787', '#fa5252', '#e03131'];
-            const heartSymbols = ['❤️', '💗', '💖', '💕', '💝'];
+            const heartSymbols = ['❤️', '💗', '💖', '💕', '💝', '❤️‍🔥'];
             
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < 8; i++) {
                 setTimeout(() => {
                     const heart = document.createElement('div');
                     heart.className = 'heart';
                     heart.innerHTML = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
-                    heart.style.left = (x + (Math.random() - 0.5) * 100) + 'px';
-                    heart.style.top = (y + (Math.random() - 0.5) * 50) + 'px';
-                    heart.style.fontSize = (40 + Math.random() * 30) + 'px';
+                    heart.style.left = (x + (Math.random() - 0.5) * 120) + 'px';
+                    heart.style.top = (y + (Math.random() - 0.5) * 60) + 'px';
+                    heart.style.fontSize = (35 + Math.random() * 35) + 'px';
                     container.appendChild(heart);
                     
                     setTimeout(() => heart.remove(), 1000);
-                }, i * 80);
+                }, i * 60);
             }
         }
 
@@ -601,6 +592,17 @@
             post.likes += post.liked ? 1 : -1;
             
             button.classList.toggle('liked', post.liked);
+            
+            // Actualizar todos los botones de like de este post
+            document.querySelectorAll(`#post-${postId} .like-btn`).forEach(btn => {
+                btn.classList.toggle('liked', post.liked);
+                const svg = btn.querySelector('svg');
+                if (svg) {
+                    svg.setAttribute('fill', post.liked ? '#ed4956' : 'none');
+                    svg.setAttribute('stroke', post.liked ? '#ed4956' : 'white');
+                }
+            });
+            
             const likesSpan = document.querySelector(`#post-${postId} .likes-count`);
             if (likesSpan) {
                 likesSpan.textContent = formatNumber(post.likes) + ' Me gusta';
@@ -609,52 +611,32 @@
 
         // Toggle save
         function toggleSave(postId, button) {
-            button.classList.toggle('saved');
-            const isSaved = button.classList.contains('saved');
-            button.innerHTML = isSaved ? `
-                <svg width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="0">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                </svg>
-            ` : `
-                <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                </svg>
-            `;
-        }
-
-        // Abrir modal de configuración
-        function openConfigModal(postId) {
-            currentEditingPost = postId;
             const post = posts.find(p => p.id === postId);
             if (!post) return;
             
-            document.getElementById('video-link-input').value = post.videoUrl || '';
-            document.getElementById('video-desc-input').value = post.description || '';
-            document.getElementById('config-modal').classList.add('active');
-        }
-
-        // Cerrar modal
-        function closeModal() {
-            document.getElementById('config-modal').classList.remove('active');
-            currentEditingPost = null;
-        }
-
-        // Guardar configuración de video
-        function saveVideoConfig() {
-            if (!currentEditingPost) return;
+            post.saved = !post.saved;
+            button.classList.toggle('saved', post.saved);
             
-            const post = posts.find(p => p.id === currentEditingPost);
+            const svg = button.querySelector('svg');
+            if (svg) {
+                svg.setAttribute('fill', post.saved ? 'white' : 'none');
+            }
+        }
+
+        // Toggle play/pause del video (simulado con overlay)
+        function toggleVideo(postId, thumbnail, playBtn) {
+            const post = posts.find(p => p.id === postId);
             if (!post) return;
             
-            const url = document.getElementById('video-link-input').value;
-            const desc = document.getElementById('video-desc-input').value;
+            post.isPlaying = !post.isPlaying;
             
-            post.videoUrl = url;
-            post.videoId = extractYouTubeId(url);
-            post.description = desc;
-            
-            renderPosts();
-            closeModal();
+            if (post.isPlaying) {
+                thumbnail.classList.add('hidden');
+                playBtn.style.display = 'none';
+            } else {
+                thumbnail.classList.remove('hidden');
+                playBtn.style.display = 'flex';
+            }
         }
 
         // Renderizar posts
@@ -677,67 +659,99 @@
                                 ` : ''}
                             </div>
                         </div>
-                        <button onclick="openConfigModal(${post.id})" class="p-2 hover:bg-[#262626] rounded-full transition-colors" title="Configurar video">
-                            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        <button class="p-2 hover:bg-[#262626] rounded-full transition-colors" aria-label="Más opciones">
+                            <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                                <circle cx="12" cy="5" r="2"/>
+                                <circle cx="12" cy="12" r="2"/>
+                                <circle cx="12" cy="19" r="2"/>
                             </svg>
                         </button>
                     </div>
                     
-                    <!-- Video container -->
+                    <!-- Video container estilo Reels -->
                     <div class="video-container mx-3" id="video-container-${post.id}">
-                        ${post.videoId ? `
+                        <!-- Video embebido -->
+                        <div class="video-wrapper">
                             <iframe 
-                                src="https://www.youtube.com/embed/${post.videoId}" 
+                                src="https://www.youtube.com/embed/${post.videoId}?autoplay=0&controls=1&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${post.videoId}" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen
+                                loading="lazy"
                             ></iframe>
-                        ` : `
-                            <div class="w-full h-full flex flex-col items-center justify-center text-center p-4 bg-[#1a1a1a]">
-                                <svg width="48" height="48" fill="none" stroke="#363636" stroke-width="1.5">
-                                    <rect x="2" y="2" width="20" height="20" rx="5"/>
-                                    <polygon points="10,8 16,12 10,16" fill="#363636"/>
-                                </svg>
-                                <p class="text-[#a8a8a8] text-sm mt-3">Click en el engranaje arriba para agregar tu video de YouTube Shorts</p>
+                        </div>
+                        
+                        <!-- Thumbnail con play button -->
+                        <img 
+                            class="video-thumbnail" 
+                            src="https://img.youtube.com/vi/${post.videoId}/maxresdefault.jpg"
+                            alt="Video thumbnail"
+                            id="thumbnail-${post.id}"
+                            onerror="this.src='https://img.youtube.com/vi/${post.videoId}/hqdefault.jpg'"
+                        >
+                        
+                        <!-- Play button -->
+                        <div class="play-button" id="play-btn-${post.id}" onclick="toggleVideo(${post.id}, document.getElementById('thumbnail-${post.id}'), this)">
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="5,3 19,12 5,21"/>
+                            </svg>
+                        </div>
+                        
+                        <!-- Overlay inferior para ocultar controles de YouTube -->
+                        <div class="video-overlay-bottom"></div>
+                        
+                        <!-- Botones laterales estilo Reels -->
+                        <div class="side-actions">
+                            <div class="side-btn">
+                                <button class="action-btn p-3 bg-black/40 rounded-full like-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id}, this)" aria-label="Me gusta">
+                                    <svg width="28" height="28" fill="${post.liked ? '#ed4956' : 'none'}" stroke="${post.liked ? '#ed4956' : 'white'}" stroke-width="2">
+                                        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                                    </svg>
+                                </button>
+                                <span>${formatNumber(post.likes)}</span>
                             </div>
-                        `}
-                        <div class="absolute bottom-4 right-4 flex flex-col gap-3">
-                            <button class="action-btn p-2 bg-black/50 rounded-full ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id}, this)" aria-label="Me gusta">
-                                <svg width="28" height="28" fill="${post.liked ? '#ed4956' : 'none'}" stroke="${post.liked ? '#ed4956' : 'white'}" stroke-width="2">
-                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                                </svg>
-                            </button>
-                            <button class="action-btn p-2 bg-black/50 rounded-full" aria-label="Comentar">
-                                <svg width="28" height="28" fill="none" stroke="white" stroke-width="2">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-                                </svg>
-                            </button>
-                            <button class="action-btn p-2 bg-black/50 rounded-full" aria-label="Compartir">
-                                <svg width="28" height="28" fill="none" stroke="white" stroke-width="2">
-                                    <path d="M22 2L11 13"/>
-                                    <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
-                                </svg>
-                            </button>
-                            <button class="action-btn p-2 bg-black/50 rounded-full ${post.saved ? 'saved' : ''}" onclick="toggleSave(${post.id}, this)" aria-label="Guardar">
-                                ${post.saved ? `
-                                    <svg width="28" height="28" fill="white" stroke="white" stroke-width="0">
-                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                                    </svg>
-                                ` : `
+                            <div class="side-btn">
+                                <button class="action-btn p-3 bg-black/40 rounded-full" aria-label="Comentar">
                                     <svg width="28" height="28" fill="none" stroke="white" stroke-width="2">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                    </svg>
+                                </button>
+                                <span>${post.comments}</span>
+                            </div>
+                            <div class="side-btn">
+                                <button class="action-btn p-3 bg-black/40 rounded-full" aria-label="Compartir">
+                                    <svg width="28" height="28" fill="none" stroke="white" stroke-width="2">
+                                        <path d="M22 2L11 13"/>
+                                        <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+                                    </svg>
+                                </button>
+                                <span>${post.shares}</span>
+                            </div>
+                            <div class="side-btn">
+                                <button class="action-btn p-3 bg-black/40 rounded-full save-btn ${post.saved ? 'saved' : ''}" onclick="toggleSave(${post.id}, this)" aria-label="Guardar">
+                                    <svg width="28" height="28" fill="${post.saved ? 'white' : 'none'}" stroke="white" stroke-width="2">
                                         <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
                                     </svg>
-                                `}
-                            </button>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Info del usuario en la parte inferior -->
+                        <div class="absolute bottom-4 left-4 right-16 z-10">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="w-7 h-7 rounded-full bg-gradient-to-br ${post.account.gradient} flex items-center justify-center text-white font-bold text-xs">
+                                    ${post.account.avatar}
+                                </div>
+                                <span class="font-semibold text-sm text-white drop-shadow-lg">${post.account.username}</span>
+                            </div>
+                            <p class="text-white text-xs drop-shadow-lg line-clamp-2">${post.description.slice(0, 80)}...</p>
                         </div>
                     </div>
                     
-                    <!-- Actions -->
+                    <!-- Actions abajo -->
                     <div class="p-3">
                         <div class="flex items-center justify-between mb-2">
                             <div class="flex items-center gap-4">
-                                <button class="action-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id}, this)" aria-label="Me gusta">
+                                <button class="action-btn like-btn ${post.liked ? 'liked' : ''}" onclick="toggleLike(${post.id}, this)" aria-label="Me gusta">
                                     <svg width="24" height="24" fill="${post.liked ? '#ed4956' : 'none'}" stroke="${post.liked ? '#ed4956' : 'currentColor'}" stroke-width="2">
                                         <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                                     </svg>
@@ -754,22 +768,16 @@
                                     </svg>
                                 </button>
                             </div>
-                            <button class="action-btn ${post.saved ? 'saved' : ''}" onclick="toggleSave(${post.id}, this)" aria-label="Guardar">
-                                ${post.saved ? `
-                                    <svg width="24" height="24" fill="currentColor" stroke="currentColor" stroke-width="0">
-                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                                    </svg>
-                                ` : `
-                                    <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
-                                    </svg>
-                                `}
+                            <button class="action-btn save-btn ${post.saved ? 'saved' : ''}" onclick="toggleSave(${post.id}, this)" aria-label="Guardar">
+                                <svg width="24" height="24" fill="${post.saved ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                                </svg>
                             </button>
                         </div>
                         <p class="font-semibold text-sm likes-count">${formatNumber(post.likes)} Me gusta</p>
                     </div>
                     
-                    <!-- Description -->
+                    <!-- Description completa -->
                     <div class="px-3 pb-4">
                         <p class="text-sm">
                             <span class="font-semibold">${post.account.username}</span>
@@ -781,13 +789,13 @@
                 </article>
             `).join('');
 
-            // Agregar event listeners para corazones
+            // Agregar event listeners para corazones en el área del video
             posts.forEach(post => {
                 const container = document.getElementById(`video-container-${post.id}`);
                 if (container) {
-                    container.addEventListener('click', (e) => {
-                        // Solo si no es un botón
-                        if (e.target.closest('button')) return;
+                    container.addEventListener('dblclick', (e) => {
+                        // No crear corazones si es un botón
+                        if (e.target.closest('button') || e.target.closest('.play-button')) return;
                         
                         const rect = container.getBoundingClientRect();
                         const x = e.clientX - rect.left;
@@ -797,8 +805,7 @@
                         
                         // También dar like
                         if (!post.liked) {
-                            const likeBtn = container.querySelector('.action-btn');
-                            if (likeBtn) toggleLike(post.id, likeBtn);
+                            toggleLike(post.id, document.querySelector(`#post-${post.id} .side-btn .like-btn`));
                         }
                     });
                 }
@@ -811,16 +818,6 @@
                 document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
                 item.classList.add('active');
             });
-        });
-
-        // Cerrar modal con ESC
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
-        });
-
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('config-modal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) closeModal();
         });
 
         // Inicializar
