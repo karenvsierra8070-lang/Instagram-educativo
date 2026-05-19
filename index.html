@@ -318,6 +318,9 @@
             color: var(--text-secondary);
             transition: color 0.2s;
             position: relative;
+            background: none;
+            border: none;
+            width: 100%;
         }
         .nav-item.active { color: var(--text-primary); }
         .nav-item.active::after {
@@ -402,6 +405,111 @@
             margin-top: 4px;
         }
 
+        /* Links Section Styles */
+        .links-container {
+            padding: 20px 16px;
+            padding-bottom: 100px;
+        }
+
+        .link-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            transition: transform 0.2s, border-color 0.2s;
+            text-decoration: none;
+            display: block;
+        }
+
+        .link-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-blue);
+        }
+
+        .link-card-image {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-card-image::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0,149,246,0.1) 0%, transparent 70%);
+        }
+
+        .link-card-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(0,149,246,0.15);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .link-card-icon svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--accent-blue);
+        }
+
+        .link-card-content {
+            padding: 16px;
+        }
+
+        .link-card-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .link-card-description {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .link-card-url {
+            font-size: 12px;
+            color: var(--accent-blue);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .link-card-tag {
+            display: inline-block;
+            background: rgba(0,149,246,0.1);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        /* Tab content visibility */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
         /* Animaciones de entrada */
         .fade-in-up {
             animation: fadeInUp 0.6s ease forwards;
@@ -476,7 +584,7 @@
 
         <nav class="max-w-lg mx-auto px-4">
             <div class="flex justify-around">
-                <button class="nav-item active" data-tab="posts">
+                <button class="nav-item active" data-tab="posts" onclick="switchTab('posts')">
                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"/>
                         <rect x="14" y="3" width="7" height="7"/>
@@ -485,19 +593,19 @@
                     </svg>
                     <span class="text-xs font-medium">Publicaciones</span>
                 </button>
-                <button class="nav-item" data-tab="reels">
+                <button class="nav-item" data-tab="reels" onclick="switchTab('reels')">
                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="2" width="20" height="20" rx="5"/>
                         <polygon points="10,8 16,12 10,16" fill="currentColor"/>
                     </svg>
                     <span class="text-xs font-medium">Reels</span>
                 </button>
-                <button class="nav-item" data-tab="tagged">
+                <button class="nav-item" data-tab="tagged" onclick="switchTab('tagged')">
                     <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="10"/>
                         <circle cx="12" cy="12" r="3"/>
                     </svg>
-                    <span class="text-xs font-medium">Etiquetados</span>
+                    <span class="text-xs font-medium">Enlaces</span>
                 </button>
             </div>
         </nav>
@@ -505,16 +613,36 @@
 
     <!-- Main Content -->
     <main class="max-w-lg mx-auto">
-        <section class="stories-container py-4 px-4 border-b border-[#262626]">
+        <!-- Stories - Solo visible en posts -->
+        <section class="stories-container py-4 px-4 border-b border-[#262626] id="stories-section"">
             <div class="flex gap-4" id="stories-list"></div>
         </section>
-        <section id="posts-feed" class="pb-20"></section>
+
+        <!-- Tab: Posts -->
+        <section id="tab-posts" class="tab-content active pb-20"></section>
+
+        <!-- Tab: Reels -->
+        <section id="tab-reels" class="tab-content pb-20">
+            <div class="flex flex-col items-center justify-center py-20 px-4 text-center">
+                <svg width="64" height="64" fill="none" stroke="#363636" stroke-width="1.5" class="mb-4">
+                    <rect x="2" y="2" width="20" height="20" rx="5"/>
+                    <polygon points="10,8 16,12 10,16" fill="#363636"/>
+                </svg>
+                <p class="text-[#a8a8a8]">Los Reels están en la sección de Publicaciones</p>
+                <button onclick="switchTab('posts')" class="mt-4 text-[#0095f6] font-semibold">Ver Publicaciones</button>
+            </div>
+        </section>
+
+        <!-- Tab: Etiquetados/Enlaces -->
+        <section id="tab-tagged" class="tab-content pb-20">
+            <div class="links-container" id="links-container"></div>
+        </section>
     </main>
 
     <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-black border-t border-[#262626] z-50">
         <div class="max-w-lg mx-auto flex justify-around py-2">
-            <button class="p-3" aria-label="Inicio">
+            <button class="p-3" aria-label="Inicio" onclick="switchTab('posts')">
                 <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
                 </svg>
@@ -532,7 +660,7 @@
                     <line x1="8" y1="12" x2="16" y2="12"/>
                 </svg>
             </button>
-            <button class="p-3" aria-label="Reels">
+            <button class="p-3" aria-label="Reels" onclick="switchTab('reels')">
                 <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="2" y="2" width="20" height="20" rx="5"/>
                     <polygon points="10,8 16,12 10,16"/>
@@ -552,6 +680,31 @@
             { username: 'Derechos_todos', name: 'Dignidad humana', avatar: 'D', gradient: 'from-blue-500 to-cyan-500', verified: false },
             { username: 'historia_viva', name: 'Historia Viva', avatar: 'Hv', gradient: 'from-amber-500 to-orange-500', verified: true },
             { username: 'Haxe666', name: 'Mi Cuenta Educativa', avatar: 'H', gradient: 'from-purple-500 to-pink-500', verified: false }
+        ];
+
+        // Enlaces de interés
+        const linksData = [
+            {
+                title: 'Colombia: La represa Urrá y la muerte del río Sinú',
+                description: 'Artículo del Boletín del WRM que analiza el impacto ambiental y social de la hidroeléctrica Urrá sobre el río Sinú y las comunidades locales.',
+                url: 'https://www.wrm.org.uy/es/articulos-del-boletin/colombia-la-represa-urra-y-la-muerte-del-rio-sinu',
+                tag: 'Medio Ambiente',
+                domain: 'wrm.org.uy'
+            },
+            {
+                title: 'Derechos Humanos en Colombia',
+                description: 'Portal oficial de la Defensoría del Pueblo de Colombia con información sobre derechos humanos, recursos y canales de atención ciudadana.',
+                url: 'https://www.defensoria.gov.co/derechos-humanos',
+                tag: 'Derechos Humanos',
+                domain: 'defensoria.gov.co'
+            },
+            {
+                title: 'Acciones de Responsabilidad Social Corporativa',
+                description: 'Artículo académico de la Universidad Internacional de La Rioja (UNIR) sobre estrategias de responsabilidad social en el ámbito corporativo.',
+                url: 'https://www.unir.net/revista/ingenieria/acciones-responsabilidad-social-corporativa/',
+                tag: 'Académico',
+                domain: 'unir.net'
+            }
         ];
 
         // Comentarios predefinidos para el LIVE
@@ -657,6 +810,34 @@
             return num.toString();
         }
 
+        // Switch tabs function
+        function switchTab(tabName) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar el tab seleccionado
+            const selectedTab = document.getElementById(`tab-${tabName}`);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+            }
+
+            // Actualizar navegación
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+                if (item.dataset.tab === tabName) {
+                    item.classList.add('active');
+                }
+            });
+
+            // Mostrar/ocultar stories según el tab
+            const storiesSection = document.getElementById('stories-section');
+            if (storiesSection) {
+                storiesSection.style.display = tabName === 'posts' ? 'block' : 'none';
+            }
+        }
+
         function renderStories() {
             const container = document.getElementById('stories-list');
             container.innerHTML = accounts.map((account, index) => `
@@ -671,6 +852,39 @@
                     <span class="text-xs truncate w-14 text-center">${account.username.slice(0, 10)}</span>
                 </div>
             `).join('');
+        }
+
+        function renderLinks() {
+            const container = document.getElementById('links-container');
+            container.innerHTML = `
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold mb-2">Enlaces de Interés</h2>
+                    <p class="text-sm text-[#a8a8a8]">Recursos y información sobre el proyecto Urrá</p>
+                </div>
+                ${linksData.map((link, index) => `
+                    <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="link-card fade-in-up stagger-${index + 1}">
+                        <div class="link-card-image">
+                            <div class="link-card-icon">
+                                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="link-card-content">
+                            <span class="link-card-tag">${link.tag}</span>
+                            <h3 class="link-card-title">${link.title}</h3>
+                            <p class="link-card-description">${link.description}</p>
+                            <div class="link-card-url">
+                                <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
+                                </svg>
+                                ${link.domain}
+                            </div>
+                        </div>
+                    </a>
+                `).join('')}
+            `;
         }
 
         function createHearts(container, x, y) {
@@ -740,7 +954,6 @@
                 thumbnail.classList.add('hidden');
                 playBtn.classList.add('hidden');
                 
-                // Cambiar src del iframe para activar autoplay
                 if (iframe) {
                     const currentSrc = iframe.src;
                     if (!currentSrc.includes('autoplay=1')) {
@@ -748,7 +961,6 @@
                     }
                 }
                 
-                // Iniciar LIVE comments si es el primer video
                 if (post.isLive && !liveIntervals[postId]) {
                     startLiveComments(postId);
                 }
@@ -756,7 +968,6 @@
                 thumbnail.classList.remove('hidden');
                 playBtn.classList.remove('hidden');
                 
-                // Pausar video
                 if (iframe) {
                     iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
                 }
@@ -847,7 +1058,7 @@
         }
 
         function renderPosts() {
-            const container = document.getElementById('posts-feed');
+            const container = document.getElementById('tab-posts');
             container.innerHTML = posts.map((post, index) => `
                 <article id="post-${post.id}" class="post-card fade-in-up stagger-${index + 1}">
                     <!-- Header -->
@@ -1033,7 +1244,6 @@
                 const videoContainer = document.getElementById(`video-container-${post.id}`);
                 if (videoContainer) {
                     videoContainer.addEventListener('dblclick', (e) => {
-                        // No activar si es un botón
                         if (e.target.closest('button')) return;
                         
                         const rect = videoContainer.getBoundingClientRect();
@@ -1050,18 +1260,11 @@
             });
         }
 
-        // Navigation tabs
-        document.querySelectorAll('.nav-item').forEach(item => {
-            item.addEventListener('click', () => {
-                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-                item.classList.add('active');
-            });
-        });
-
         // Inicializar
         document.addEventListener('DOMContentLoaded', () => {
             renderStories();
             renderPosts();
+            renderLinks();
         });
     </script>
 </body>
