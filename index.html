@@ -57,7 +57,7 @@
         }
         .stories-container::-webkit-scrollbar { display: none; }
 
-        /* Video container - estilo Instagram Reels */
+        /* Video container */
         .video-container {
             position: relative;
             width: 100%;
@@ -81,23 +81,28 @@
 
         .video-cropper iframe {
             position: absolute;
-            top: -12%;
+            top: -10%;
             left: 0;
             width: 100%;
-            height: 124%;
+            height: 120%;
             border: none;
-            pointer-events: auto;
         }
 
-        /* Capa de interaccion para corazones */
-        .interaction-layer {
+        /* Thumbnail clickeable */
+        .video-thumbnail {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10;
-            background: transparent;
+            object-fit: cover;
+            z-index: 5;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        .video-thumbnail.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         /* Play button */
@@ -128,21 +133,8 @@
             fill: white;
             margin-left: 5px;
         }
-
-        /* Thumbnail */
-        .video-thumbnail {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 5;
-            transition: opacity 0.3s;
-        }
-        .video-thumbnail.hidden {
-            opacity: 0;
-            pointer-events: none;
+        .play-button.hidden {
+            display: none;
         }
 
         /* Corazones animados */
@@ -569,7 +561,7 @@
             { user: 'laura_riosp', text: 'Como podemos ayudar? alguien sabe?' },
             { user: 'carlos_monteria', text: 'El gobierno tiene que responder ya!' },
             { user: 'ana_sofia_98', text: 'Mis primos estan afectados, gracias por informar' },
-            { user: 'pedro_urrá', text: 'La hidroelectrica tiene mucha culpa de esto' },
+            { user: 'pedro_urra', text: 'La hidroelectrica tiene mucha culpa de esto' },
             { user: 'carmen_lucia', text: 'Orando por todas las familias de Cordoba' },
             { user: 'andres_martinez', text: 'Excelente contenido, gracias por visibilizar' },
             { user: 'sofia_emprendedora', text: 'Donde podemos donar alimentos y ropa?' },
@@ -621,7 +613,7 @@
                 videoId: 'W12jz2ruU78',
                 description: 'Detengamos un segundo el debate técnico y hablemos de lo que realmente importa aquí: la dignidad de la gente. 🛑👇 He estado leyendo comentarios en redes que me dejan fría. Gente diciendo que "eso les pasa por vivir cerca del río", que "es culpa de la naturaleza y ya" o que "solo buscan que el gobierno les regale todo". ¡No más! Desmintamos esto de una vez.',
                 likes: 2103,
-                 liked: false,
+                liked: false,
                 saved: false,
                 comments: [],
                 shares: 67,
@@ -734,15 +726,27 @@
             }
         }
 
-        function toggleVideo(postId, thumbnail, playBtn) {
+        function toggleVideo(postId) {
             const post = posts.find(p => p.id === postId);
             if (!post) return;
+            
+            const thumbnail = document.getElementById(`thumbnail-${postId}`);
+            const playBtn = document.getElementById(`play-btn-${postId}`);
+            const iframe = document.querySelector(`#video-container-${postId} iframe`);
             
             post.isPlaying = !post.isPlaying;
             
             if (post.isPlaying) {
                 thumbnail.classList.add('hidden');
-                playBtn.style.display = 'none';
+                playBtn.classList.add('hidden');
+                
+                // Cambiar src del iframe para activar autoplay
+                if (iframe) {
+                    const currentSrc = iframe.src;
+                    if (!currentSrc.includes('autoplay=1')) {
+                        iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
+                    }
+                }
                 
                 // Iniciar LIVE comments si es el primer video
                 if (post.isLive && !liveIntervals[postId]) {
@@ -750,7 +754,12 @@
                 }
             } else {
                 thumbnail.classList.remove('hidden');
-                playBtn.style.display = 'flex';
+                playBtn.classList.remove('hidden');
+                
+                // Pausar video
+                if (iframe) {
+                    iframe.src = iframe.src.replace('autoplay=1', 'autoplay=0');
+                }
             }
         }
 
@@ -760,10 +769,8 @@
             
             let commentIndex = 0;
             
-            // Funcion para agregar comentario
             const addLiveComment = () => {
                 if (commentIndex >= liveCommentsData.length) {
-                    // Reiniciar desde el principio si se acaban
                     commentIndex = 0;
                 }
                 
@@ -772,15 +779,12 @@
                 commentEl.className = 'live-comment-item';
                 commentEl.innerHTML = `<span class="username">${comment.user}</span> ${comment.text}`;
                 
-                // Agregar al inicio (arriba)
                 container.insertBefore(commentEl, container.firstChild);
                 
-                // Limitar a 10 comentarios visibles
                 while (container.children.length > 10) {
                     container.removeChild(container.lastChild);
                 }
                 
-                // Actualizar viewer count aleatoriamente
                 const post = posts.find(p => p.id === postId);
                 if (post) {
                     post.liveViewerCount += Math.floor(Math.random() * 10) - 3;
@@ -793,10 +797,7 @@
                 commentIndex++;
             };
             
-            // Agregar primer comentario inmediatamente
             addLiveComment();
-            
-            // Programar siguientes cada 10 segundos
             liveIntervals[postId] = setInterval(addLiveComment, 10000);
         }
 
@@ -839,7 +840,6 @@
             
             input.value = '';
             
-            // Actualizar contador
             const countEl = document.querySelector(`#post-${postId} .comment-count`);
             if (countEl) {
                 countEl.textContent = post.comments.length;
@@ -879,31 +879,29 @@
                         <!-- Cropper con iframe -->
                         <div class="video-cropper">
                             <iframe 
-                                src="https://www.youtube.com/embed/${post.videoId}?autoplay=0&controls=0&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${post.videoId}" 
+                                src="https://www.youtube.com/embed/${post.videoId}?autoplay=0&controls=1&modestbranding=1&rel=0&showinfo=0&loop=1&playlist=${post.videoId}" 
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                                 allowfullscreen
                                 loading="lazy"
                             ></iframe>
                         </div>
                         
-                        <!-- Thumbnail -->
+                        <!-- Thumbnail clickeable -->
                         <img 
                             class="video-thumbnail" 
                             src="https://img.youtube.com/vi/${post.videoId}/maxresdefault.jpg"
                             alt="Video thumbnail"
                             id="thumbnail-${post.id}"
                             onerror="this.src='https://img.youtube.com/vi/${post.videoId}/hqdefault.jpg'"
+                            onclick="toggleVideo(${post.id})"
                         >
                         
                         <!-- Play Button -->
-                        <div class="play-button" id="play-btn-${post.id}" onclick="toggleVideo(${post.id}, document.getElementById('thumbnail-${post.id}'), this)">
+                        <div class="play-button" id="play-btn-${post.id}" onclick="toggleVideo(${post.id})">
                             <svg viewBox="0 0 24 24">
                                 <polygon points="5,3 19,12 5,21"/>
                             </svg>
                         </div>
-                        
-                        <!-- Interaction Layer para corazones -->
-                        <div class="interaction-layer" id="interaction-${post.id}"></div>
                         
                         ${post.isLive ? `
                             <!-- LIVE Badge -->
@@ -956,7 +954,7 @@
                         </div>
                         
                         <!-- User info en bottom -->
-                        <div class="absolute bottom-4 left-4 right-16 z-10">
+                        <div class="absolute bottom-4 left-4 right-16 z-10 pointer-events-none">
                             <div class="flex items-center gap-2 mb-2">
                                 <div class="w-7 h-7 rounded-full bg-gradient-to-br ${post.account.gradient} flex items-center justify-center text-white font-bold text-xs">
                                     ${post.account.avatar}
@@ -997,7 +995,7 @@
                         <p class="font-semibold text-sm likes-count">${formatNumber(post.likes)} Me gusta</p>
                     </div>
                     
-                    <!-- Description -->
+                    <!-- Description completa -->
                     <div class="px-3 pb-2">
                         <p class="text-sm">
                             <span class="font-semibold">${post.account.username}</span>
@@ -1030,16 +1028,19 @@
                 </article>
             `).join('');
 
-            // Event listeners para corazones (doble click)
+            // Event listeners para corazones (doble click en el contenedor)
             posts.forEach(post => {
-                const interactionLayer = document.getElementById(`interaction-${post.id}`);
-                if (interactionLayer) {
-                    interactionLayer.addEventListener('dblclick', (e) => {
-                        const rect = interactionLayer.getBoundingClientRect();
+                const videoContainer = document.getElementById(`video-container-${post.id}`);
+                if (videoContainer) {
+                    videoContainer.addEventListener('dblclick', (e) => {
+                        // No activar si es un botón
+                        if (e.target.closest('button')) return;
+                        
+                        const rect = videoContainer.getBoundingClientRect();
                         const x = e.clientX - rect.left;
                         const y = e.clientY - rect.top;
                         
-                        createHearts(interactionLayer, x, y);
+                        createHearts(videoContainer, x, y);
                         
                         if (!post.liked) {
                             toggleLike(post.id, document.querySelector(`#post-${post.id} .side-btn .like-btn`));
